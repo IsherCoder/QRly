@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QRly by Isher Coder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #e0f2f1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #00796b;
+      margin-bottom: 1rem;
+    }
+
+    input {
+      padding: 12px 18px;
+      width: 80%;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #004d40;
+    }
+
+    #qrImage {
+      margin-top: 2rem;
+    }
+
+    #qrImage img {
+      max-width: 200px;
+      margin-bottom: 1rem;
+    }
+
+    #downloadBtn {
+      display: none;
+      margin-top: 0.5rem;
+      text-decoration: none;
+      background: #26a69a;
+      padding: 10px 20px;
+      border-radius: 6px;
+      color: white;
+      font-weight: 600;
+    }
+
+    #downloadBtn:hover {
+      background: #1e8881;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>QRly</h1>
+    <input type="text" id="dataInput" placeholder="Enter URL or Text">
+    <br>
+    <button onclick="generateQR()">Generate QR Code</button>
+    <div id="qrImage"></div>
+    <a id="downloadBtn" download="qrly-code.png">Download QR</a>
+  </div>
+
+  <script>
+    function generateQR() {
+      const data = document.getElementById("dataInput").value;
+      fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ data })
+      })
+      .then(res => res.blob())
+      .then(blob => {
+        const img = document.createElement('img');
+        const url = URL.createObjectURL(blob);
+        img.src = url;
+
+        const qrDiv = document.getElementById('qrImage');
+        qrDiv.innerHTML = '';
+        qrDiv.appendChild(img);
+
+        const downloadBtn = document.getElementById('downloadBtn');
+        downloadBtn.href = url;
+        downloadBtn.style.display = 'inline-block';
+      });
+    }
+  </script>
+</body>
+</html>
